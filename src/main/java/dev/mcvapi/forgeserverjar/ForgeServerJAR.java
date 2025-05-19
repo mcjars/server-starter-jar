@@ -5,6 +5,9 @@ import dev.mcvapi.forgeserverjar.utils.ErrorReporter;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ForgeServerJAR {
 	public static void main(final String[] args) {
@@ -41,8 +44,18 @@ public class ForgeServerJAR {
 		System.arraycopy(vmArgs, 0, cmd, 1, vmArgs.length);
 
 		boolean windows = System.getProperty("os.name").startsWith("Windows");
-		cmd[1 + vmArgs.length] = "@libraries/net/minecraftforge/forge/" + forgeVersion + "/" + (windows ? "win" : "unix")
-				+ "_args.txt";
+		String argsFileName = (windows ? "win" : "unix") + "_args.txt";
+
+		Path localArgsPath = Paths.get(argsFileName);
+		String argsFilePath;
+
+		if (Files.exists(localArgsPath)) {
+			argsFilePath = localArgsPath.toString();
+		} else {
+			argsFilePath = directoryPath + "/" + forgeVersion + "/" + argsFileName;
+		}
+
+		cmd[1 + vmArgs.length] = "@" + argsFilePath;
 
 		System.arraycopy(args, 0, cmd, 2 + vmArgs.length, args.length);
 
