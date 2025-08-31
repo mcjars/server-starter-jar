@@ -1,34 +1,49 @@
 package dev.mcvapi.forgeserverjar;
 
 import dev.mcvapi.forgeserverjar.server.ServerBootstrap;
-import dev.mcvapi.forgeserverjar.utils.ErrorReporter;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ForgeServerJAR {
 	public static void main(final String[] args) {
-		String directoryPath = "libraries/net/minecraftforge/forge";
-		String forgeVersion = null;
-		File directory = new File(directoryPath);
-		File[] filesAndDirs = directory.listFiles();
+		String[] searchPaths = { "libraries/net/minecraftforge/forge", "libraries/net/neoforged/neoforge",
+				"libraries/net/neoforged/forge", "libraries/org/magmafoundation/magma" };
+		File directory = null;
+		String loaderVersion = null;
 
-		if (filesAndDirs == null) {
-			ErrorReporter.error("08", true);
-		}
+		for (String path : searchPaths) {
+			directory = new File(path);
+			if (directory.isDirectory()) {
+				for (File sub : directory.listFiles(File::isDirectory)) {
+					loaderVersion = sub.getName();
+					break;
+				}
 
-		assert filesAndDirs != null;
-		for (File fileOrDir : filesAndDirs) {
-			if (fileOrDir.isDirectory()) {
-				forgeVersion = fileOrDir.getName();
+				if (loaderVersion != null)
+					break;
 			}
 		}
 
-		if (forgeVersion == null) {
-			ErrorReporter.error("09", true);
+		String thisJar = "server.jar";
+		try {
+			thisJar = ForgeServerJAR.class
+					.getProtectionDomain()
+					.getCodeSource()
+					.getLocation()
+					.toURI()
+					.getPath();
+		} catch (URISyntaxException e) {
+		}
+
+		if (directory == null || loaderVersion == null) {
+			System.err.println(
+					"Neither Forge 1.17+, NeoForge or Magma were found. Try to remove `" + thisJar + "` or reinstall loader.");
+			System.exit(1);
 		}
 
 		String[] vmArgs = ManagementFactory.getRuntimeMXBean().getInputArguments().toArray(new String[0]);
@@ -52,7 +67,7 @@ public class ForgeServerJAR {
 		if (Files.exists(localArgsPath)) {
 			argsFilePath = localArgsPath.toString();
 		} else {
-			argsFilePath = directoryPath + "/" + forgeVersion + "/" + argsFileName;
+			argsFilePath = directory.getPath() + "/" + loaderVersion + "/" + argsFileName;
 		}
 
 		cmd[1 + vmArgs.length] = "@" + argsFilePath;
