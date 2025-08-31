@@ -32,12 +32,11 @@ jobs:
     - name: Install dependencies and build
       run: mvn install
 
-    - name: Create Release
-      id: create_release
-      uses: softprops/action-gh-release@v2
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
       with:
-        files: target/ServerStarter.jar
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: ${{ steps.get-version-id.outputs.id }}
-        draft: false
-        prerelease: false
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: target/ServerStarter.jar
+        file_glob: false
+        tag: ${{ steps.get-version-id.outputs.id }}
+        overwrite: true
