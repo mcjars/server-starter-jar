@@ -1,4 +1,4 @@
-package dev.mcvapi.forgeserverjar.server;
+package app.mcjars.serverstarter.server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

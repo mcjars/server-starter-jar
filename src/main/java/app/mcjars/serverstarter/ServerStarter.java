@@ -1,6 +1,4 @@
-package dev.mcvapi.forgeserverjar;
-
-import dev.mcvapi.forgeserverjar.server.ServerBootstrap;
+package app.mcjars.serverstarter;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -9,7 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ForgeServerJAR {
+import app.mcjars.serverstarter.server.ServerBootstrap;
+
+public class ServerStarter {
 	public static void main(final String[] args) {
 		String[] searchPaths = { "libraries/net/minecraftforge/forge", "libraries/net/neoforged/neoforge",
 				"libraries/net/neoforged/forge", "libraries/org/magmafoundation/magma" };
@@ -31,7 +31,7 @@ public class ForgeServerJAR {
 
 		String thisJar = "server.jar";
 		try {
-			thisJar = ForgeServerJAR.class
+			thisJar = ServerStarter.class
 					.getProtectionDomain()
 					.getCodeSource()
 					.getLocation()
@@ -42,7 +42,8 @@ public class ForgeServerJAR {
 
 		if (directory == null || loaderVersion == null) {
 			System.err.println(
-					"Neither Forge 1.17+, NeoForge or Magma were found. Try to remove `" + thisJar + "` or reinstall loader.");
+					"Neither Forge 1.17+, NeoForge or Magma were found. Try to remove `" + thisJar
+							+ "` or reinstall the loader.");
 			System.exit(1);
 		}
 
@@ -53,7 +54,7 @@ public class ForgeServerJAR {
 		if (javaHome == null) {
 			cmd[0] = "java";
 		} else {
-			cmd[0] = javaHome + "/bin/java";
+			cmd[0] = javaHome + (javaHome.endsWith("/") ? "bin/java" : "/bin/java");
 		}
 
 		System.arraycopy(vmArgs, 0, cmd, 1, vmArgs.length);

@@ -4,14 +4,14 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>dev.mcvapi</groupId>
-	<artifactId>ForgeServerJAR</artifactId>
+	<groupId>app.mcjars</groupId>
+	<artifactId>ServerStarter</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 
-	<name>ForgeServerJAR</name>
-	<description>Forge Server loader for mcvapi.</description>
+	<name>ServerStarter</name>
+	<description>Server Starter Jar for MCJars.</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -21,7 +21,7 @@
 	</properties>
 
 	<build>
-		<finalName>ForgeServerJAR</finalName>
+		<finalName>ServerStarter</finalName>
 		<defaultGoal>clean package</defaultGoal>
 		<plugins>
 			<plugin>
@@ -55,7 +55,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>dev.mcvapi.forgeserverjar.ForgeServerJAR</mainClass>
+							<mainClass>app.mcjars.serverstarter.ServerStarter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
