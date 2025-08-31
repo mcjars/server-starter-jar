@@ -4,6 +4,7 @@ import dev.mcvapi.forgeserverjar.server.ServerBootstrap;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,8 +29,20 @@ public class ForgeServerJAR {
 			}
 		}
 
+		String thisJar = "server.jar";
+		try {
+			thisJar = ForgeServerJAR.class
+					.getProtectionDomain()
+					.getCodeSource()
+					.getLocation()
+					.toURI()
+					.getPath();
+		} catch (URISyntaxException e) {
+		}
+
 		if (directory == null || loaderVersion == null) {
-			System.err.println("Forge not found. Is it installed correctly?");
+			System.err.println(
+					"Neither Forge 1.17+, NeoForge or Magma were found. Try to remove `" + thisJar + "` or reinstall loader.");
 			System.exit(1);
 		}
 
